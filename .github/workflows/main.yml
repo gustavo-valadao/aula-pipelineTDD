@@ -1,0 +1,42 @@
+# Workflow de integração contínua - CI - pipeline-ci.yml
+name: Pipeline Node.js CI
+
+#Agora vamos programar os eventos (gatilhos) de disparo do pipeline
+on:
+  push:
+    branches:
+      - main
+      - develop
+    
+  pull_request:
+    branches: [main, develop]
+
+#Agora vamos programar as tarefas (jobs), que são os pipelines de execução
+jobs:
+
+  #Agora irei programar os passos do (steps) do primeiro fluxo - CI - Continuous integration
+  ci:
+    name: Job para integração contínua
+    runs-on: ubuntu-latest
+    steps:
+      # comando run - executa um comando shell na máquina virtual
+      # comando use - executa uma action pré-definida na máquina virtual
+      - name: Setup Node.js
+        uses: actions/checkout@v4
+
+      - name: Instalação de dependências
+        run: npm install -y
+
+      - name: Execução dos testes
+        run: npm run test
+
+  #Agora irei programar os passos do (steps) do segundo fluxo - CD - Continuous delivery
+  cd:
+    name: Job para deploy contínuo
+    needs: ci
+    runs-on: ubuntu-latest
+
+    #Aqui seriam os passos de deploy (instalação do ambiente do usuário)
+    steps:
+      - name: Sucesso
+        run: echo "Simulação do deploy"
